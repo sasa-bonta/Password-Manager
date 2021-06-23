@@ -2,7 +2,9 @@
 
 namespace App\src;
 
-class Account
+use JsonSerializable;
+
+class Account implements JsonSerializable
 {
     private string $site;
     private string $login;
@@ -19,6 +21,15 @@ class Account
         $this->site = $site;
         $this->login = $login;
         $this->password = $password;
+    }
+
+    public function jsonSerialize(): array
+    {
+        return [
+            'site' => $this->site,
+            'login' => $this->login,
+            'password' => $this->password
+        ];
     }
 
     /**

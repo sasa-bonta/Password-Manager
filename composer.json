@@ -1,6 +1,8 @@
 {
     "require": {
-        "symfony/console": "^5.3"
+        "symfony/console": "^5.3",
+      "ext-json": "*",
+      "ext-readline": "*"
     },
     "autoload": {
         "psr-4": {

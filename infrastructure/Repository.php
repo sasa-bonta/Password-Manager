@@ -7,8 +7,8 @@ use App\src\Account;
 interface Repository
 {
     public function addAccount(Account $account): bool;
-    public function getCredentials(string $site): Account;
-    public function findAccount(string $site, string $login = null): ?Account;
+    public function getCredentials(string $site): ?array;
+    public function findAccount(string $site, string $login): ?Account;
     public function editAccount(Account $account): bool;
-    public function deleteAccount(string $site): bool;
+    public function deleteAccount(Account $account): bool;
 }

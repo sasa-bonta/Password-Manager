@@ -33,17 +33,30 @@ class AccountRepo implements Repository
 
     public function addAccount(Account $account): bool
     {
-        // TODO: Implement addAccount() method.
+        $this->accounts[] = $account;
+        return true;
     }
 
-    public function getCredentials(string $site): Account
+    public function getCredentials(string $site): ?array
     {
-        // TODO: Implement getCredentials() method.
+        $matchedAccounts = [];
+        foreach ($this->accounts as $account) {
+            if ($account['site'] === $site) {
+                $matchedAccounts[] = $account;
+            }
+        }
+
+        return $matchedAccounts;
     }
 
-    public function findAccount(string $site, string $login = null): ?Account
+    public function findAccount(string $site, string $login): ?Account
     {
-        // TODO: Implement findAccount() method.
+        foreach ($this->accounts as $account) {
+            if ($account['site'] === $site && $account['login'] == $login) {
+                return new Account($account['site'], $account['login'], $account['password']);
+            }
+        }
+        return null;
     }
 
     public function editAccount(Account $account): bool
@@ -51,22 +64,24 @@ class AccountRepo implements Repository
         // TODO: Implement editAccount() method.
     }
 
-    public function deleteAccount(string $site): bool
+    public function deleteAccount(Account $account): bool
     {
         // TODO: Implement deleteAccount() method.
     }
 
     #========================================================
 
-    private function load() {
-        $fp = fopen(__DIR__ ."/accounts.json", "rb");
+    private function load()
+    {
+        $fp = fopen(__DIR__ . "/accounts.json", "rb");
         $contents = stream_get_contents($fp);
         fclose($fp);
         $this->accounts = json_decode($contents, TRUE);
     }
 
-    private function save() {
-        $fp = fopen(__DIR__ ."/accounts.json", "w");
+    private function save()
+    {
+        $fp = fopen(__DIR__ . "/accounts.json", "w");
         fwrite($fp, json_encode($this->accounts));
         fclose($fp);
     }
