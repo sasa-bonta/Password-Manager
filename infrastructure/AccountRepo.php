@@ -7,6 +7,7 @@ use App\src\Account;
 class AccountRepo implements Repository
 {
     private array $accounts = [];
+    private string $key = "2eOFRNBehdBCJ3067aIA";
 
     public function __construct()
     {
@@ -74,13 +75,37 @@ class AccountRepo implements Repository
         $fp = fopen(__DIR__ . "/accounts.json", "rb");
         $contents = stream_get_contents($fp);
         fclose($fp);
-        $this->accounts = json_decode($contents, TRUE);
+        $this->accounts = json_decode($this->decrypt($contents), TRUE);
     }
 
     public function save()
     {
         $fp = fopen(__DIR__ . "/accounts.json", "w");
-        fwrite($fp, json_encode($this->accounts));
+        fwrite($fp, $this->encrypt(json_encode($this->accounts)));
         fclose($fp);
+    }
+
+    #==================== borrowed functions =================
+
+    function decrypt(string $content): string
+    {
+        $decrypted = '';
+        $map = str_pad('', strlen($content), $this->key);
+        foreach (str_split($content) as $index => $symbol) {
+            $decrypted .= chr(ord($symbol) - ord($map[$index]));
+        }
+
+        return $decrypted;
+    }
+
+    function encrypt(string $content): string
+    {
+        $encrypted = '';
+        $map = str_pad('', strlen($content), $this->key);
+        foreach (str_split($content) as $index => $symbol) {
+            $encrypted .= chr(ord($symbol) + ord($map[$index]));
+        }
+
+        return $encrypted;
     }
 }
