@@ -2,6 +2,7 @@
 
 
 require_once 'vendor/autoload.php';
+
 use App\infrastructure\AccountRepo;
 use App\src\Account;
 
@@ -11,22 +12,36 @@ echo "
 1 = add
 2 = view credentials
 3 = edit
-4 = delete \n";
+4 = delete account 
+0 = exit \n \n";
 
-$command = (int)readline("Your action: ");
-option($command);
+option();
 
-function option($option) {
+function option()
+{
+    $option = (int)readline("Your action: ");
     switch ($option) {
-        case 1: echo add(); break;
-        case 2: echo view(); break;
-        case 3: echo edit(); break;
-        case 4: echo "delete \n"; break;
-        default: option((int)readline("Your action: ")); break;
+        case 0:exit();
+        case 1:
+            echo add();
+            break;
+        case 2:
+            echo view();
+            break;
+        case 3:
+            echo edit();
+            break;
+        case 4:
+            echo delete();
+            break;
+        default:
+            option();
+            break;
     }
 }
 
-function add() {
+function add()
+{
     $site = readline("Site: ");
     $login = readline("Login: ");
     $pass = readline("Password: ");
@@ -35,41 +50,87 @@ function add() {
 
     $repo = new AccountRepo();
     $repo->addAccount($account);
+    $repo->save();
+    echo "New account has been added \n";
+    echo PHP_EOL;
+    option();
 }
 
-function view() {
+function view()
+{
     $site = readline("Site: ");
     $repo = new AccountRepo();
-    echo "Your accounts on " .$site .": \n";
+    echo "Your accounts on " . $site . ": \n";
     foreach ($repo->getCredentials($site) as $account) {
         echo "----------------------- \n";
-        echo "|---" ." login    : " .$account['login'] ."\n";
-        echo "|---" ." password : " .$account['password'] ."\n";
+        echo "|---" . " login    : " . $account['login'] . "\n";
+        echo "|---" . " password : " . $account['password'] . "\n";
     }
+    $repo->save();
+    echo PHP_EOL;
+    option();
 }
 
-function edit() {
+function edit()
+{
     $site = readline("Site: ");
     $login = readline("Login: ");
 
     $repo = new AccountRepo();
-    $account = $repo->findAccount($site, $login);
-//    echo $account->getSite();
-//    echo $account->getLogin();
-//    echo $account->getPassword();
+    $index = $repo->findAccount($site, $login);
+    if (isset($index)) {
+        echo "current\n";
+        var_dump($repo->getAccounts()[$index]);
+        echo "Current password: " . $repo->getAccounts()[$index]['password'] . "\n";
+        $newSite = readline("Enter new site: ");
+        $newLogin = readline("Enter new login: ");
+        $pass = readline("Enter new password: ");
+
+        if ($newSite !== "") {
+            $site = $newSite;
+        }
+        if ($newLogin !== "") {
+            $login = $newLogin;
+        }
+        if ($pass === "") {
+            $pass = $repo->getAccounts()[$index]['password'];
+        }
+        $newAccount = new Account($site, $login, $pass);
+        $repo->editAccount($index, $newAccount);
+        $repo->save();
+        echo "Your account has been updated \n";
+    } else {
+        echo "This account doesn't exist. Try again \n";
+        edit();
+    }
+
+    echo PHP_EOL;
+    option();
 }
 
-//echo "load \n";
-//$repo = new AccountRepo();
-//var_dump($repo->getAccounts());
-//
-//var_dump($repo->findAccount("mail.ru","sasa@mail.ru"));
+function delete()
+{
+    $site = readline("Site: ");
+    $login = readline("Login: ");
 
-////echo "add 1 account \n";
-////$account = new Account("facebook.com", "sasa123", "sasa1213");
-////$repo->addAccount($account);
-////var_dump($repo->getAccounts());
-//
-//echo "founded \n";
-//var_dump($repo->getCredentials("facebook.com"));
+    $repo = new AccountRepo();
+    $index = $repo->findAccount($site, $login);
+    if (isset($index)) {
+        echo "Are you sure [y/n] ? \n";
+        if (readline() === "y") {
+            $repo->deleteAccount($index);
+            $repo->save();
+            echo "This account has been deleted \n";
+        } else {
+            echo PHP_EOL;
+            option();
+        }
+    } else {
+        echo "This account doesn't exist. Try again \n";
+        delete();
+    }
+
+    echo PHP_EOL;
+    option();
+}
 

@@ -8,9 +8,6 @@ class AccountRepo implements Repository
 {
     private array $accounts = [];
 
-    /**
-     * AccountRepo constructor.
-     */
     public function __construct()
     {
         $this->load();
@@ -21,9 +18,6 @@ class AccountRepo implements Repository
         $this->save();
     }
 
-    /**
-     * @return array
-     */
     public function getAccounts(): ?array
     {
         return $this->accounts;
@@ -49,24 +43,28 @@ class AccountRepo implements Repository
         return $matchedAccounts;
     }
 
-    public function findAccount(string $site, string $login): ?Account
+    public function findAccount(string $site, string $login): ?int
     {
+        $index = 0;
         foreach ($this->accounts as $account) {
             if ($account['site'] === $site && $account['login'] == $login) {
-                return new Account($account['site'], $account['login'], $account['password']);
+                return $index;
             }
+            $index ++;
         }
         return null;
     }
 
-    public function editAccount(Account $account): bool
+    public function editAccount(int $index, Account $account): bool
     {
-        // TODO: Implement editAccount() method.
+        $this->accounts[$index] = $account;
+        return true;
     }
 
-    public function deleteAccount(Account $account): bool
+    public function deleteAccount(int $index): bool
     {
-        // TODO: Implement deleteAccount() method.
+        array_splice($this->accounts, $index, 1);
+        return true;
     }
 
     #========================================================
@@ -79,7 +77,7 @@ class AccountRepo implements Repository
         $this->accounts = json_decode($contents, TRUE);
     }
 
-    private function save()
+    public function save()
     {
         $fp = fopen(__DIR__ . "/accounts.json", "w");
         fwrite($fp, json_encode($this->accounts));
