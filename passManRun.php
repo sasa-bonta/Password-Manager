@@ -13,6 +13,7 @@ echo "
 2 = view credentials
 3 = edit
 4 = delete account 
+5 = all sites
 0 = exit \n \n";
 
 option();
@@ -23,17 +24,19 @@ function option()
     switch ($option) {
         case 0:exit();
         case 1:
-            echo add();
+            add();
             break;
         case 2:
-            echo view();
+            view();
             break;
         case 3:
-            echo edit();
+            edit();
             break;
         case 4:
-            echo delete();
+            delete();
             break;
+        case 5:
+            sites();
         default:
             option();
             break;
@@ -132,5 +135,20 @@ function delete()
 
     echo PHP_EOL;
     option();
+}
+
+function sites() {
+    $sites = [];
+    $repo = new AccountRepo();
+    foreach ($repo->getAccounts() as $account) {
+        if (!in_array($account['site'], $sites)) {
+            $sites[] = $account['site'];
+        }
+    }
+    echo "\nList of sites: \n";
+    foreach ($sites as $site) {
+        echo $site ."\n";
+    }
+    echo PHP_EOL;
 }
 
