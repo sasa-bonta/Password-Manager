@@ -138,15 +138,9 @@ function delete()
 }
 
 function sites() {
-    $sites = [];
     $repo = new AccountRepo();
-    foreach ($repo->getAccounts() as $account) {
-        if (!in_array($account['site'], $sites)) {
-            $sites[] = $account['site'];
-        }
-    }
-    echo "\nList of sites: \n";
-    foreach ($sites as $site) {
+    echo "\nList of sites: \n-----------------------\n";
+    foreach ($repo->allSites() as $site) {
         echo $site ."\n";
     }
     echo PHP_EOL;

@@ -11,4 +11,5 @@ interface Repository
     public function findAccount(string $site, string $login): ?int;
     public function editAccount(int $index, Account $account): bool;
     public function deleteAccount(int $index): bool;
+    public function allSites(): array;
 }

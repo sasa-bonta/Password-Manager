@@ -68,6 +68,18 @@ class AccountRepo implements Repository
         return true;
     }
 
+    public function allSites(): array
+    {
+        $sites = [];
+        foreach ($this->getAccounts() as $account) {
+            if (!in_array($account['site'], $sites)) {
+                $sites[] = $account['site'];
+            }
+        }
+        return $sites;
+    }
+
+
     #========================================================
 
     private function load()
