@@ -24,6 +24,7 @@ class RepoTest extends TestCase
      */
     public function testEncrypt($json): void
     {
+//        $repo = new AccountRepo()
         $encrypted = $this->repo->encrypt($json);
         $decrypted = $this->repo->decrypt($encrypted);
         $this->assertEquals($json, $decrypted, "These values should be equal");
