@@ -36,7 +36,7 @@ class AccountRepo implements Repository
     {
         $matchedAccounts = [];
         foreach ($this->accounts as $account) {
-            if ($account['site'] === $site) {
+            if ($account->getSite() === $site) {
                 $matchedAccounts[] = $account;
             }
         }
@@ -48,10 +48,10 @@ class AccountRepo implements Repository
     {
         $index = 0;
         foreach ($this->accounts as $account) {
-            if ($account['site'] === $site && $account['login'] == $login) {
+            if ($account->getSite() === $site && $account->getLogin() == $login) {
                 return $index;
             }
-            $index ++;
+            $index++;
         }
         return null;
     }
@@ -72,8 +72,8 @@ class AccountRepo implements Repository
     {
         $sites = [];
         foreach ($this->getAccounts() as $account) {
-            if (!in_array($account['site'], $sites)) {
-                $sites[] = $account['site'];
+            if (!in_array($account->getSite(), $sites)) {
+                $sites[] = $account->getSite();
             }
         }
         return $sites;
@@ -87,7 +87,10 @@ class AccountRepo implements Repository
         $fp = fopen(__DIR__ . "/accounts.json", "rb");
         $contents = stream_get_contents($fp);
         fclose($fp);
-        $this->accounts = json_decode($this->decrypt($contents), TRUE);
+        $accountsArray = json_decode($this->decrypt($contents), TRUE);
+        foreach ($accountsArray as $array) {
+            $this->accounts[] = new Account($array['site'], $array['login'], $array['password']);
+        }
     }
 
     public function save()
