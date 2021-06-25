@@ -10,23 +10,14 @@ use PHPUnit\Framework\TestCase;
 
 class RepoTest extends TestCase
 {
-    private AccountRepo $repo;
-
-    public function __construct()
-    {
-        parent::__construct();
-        $this->repo = new AccountRepo();
-    }
-
-
     /**
      * @dataProvider dataProvider
      */
     public function testEncrypt($json): void
     {
-//        $repo = new AccountRepo()
-        $encrypted = $this->repo->encrypt($json);
-        $decrypted = $this->repo->decrypt($encrypted);
+        $repo = new AccountRepo();
+        $encrypted = $repo->encrypt($json);
+        $decrypted = $repo->decrypt($encrypted);
         $this->assertEquals($json, $decrypted, "These values should be equal");
     }
 
