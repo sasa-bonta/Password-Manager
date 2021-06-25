@@ -2,7 +2,8 @@
     "require": {
         "symfony/console": "^5.3",
       "ext-json": "*",
-      "ext-readline": "*"
+      "ext-readline": "*",
+        "phpunit/phpunit": "^9.5"
     },
     "autoload": {
         "psr-4": {
