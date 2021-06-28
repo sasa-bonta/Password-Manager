@@ -1,1 +1,1 @@
-{"version":1,"defects":{"App\\test\\RepoTest::testEncrypt":4},"times":{"App\\test\\RepoTest::testEncrypt":0.019,"App\\test\\RepoTest::testEncrypt with data set #0":0.006,"App\\test\\RepoTest::testEncrypt with data set #1":0.002}}
+{"version":1,"defects":{"App\\test\\RepoTest::testEncrypt":4},"times":{"App\\test\\RepoTest::testEncrypt":0.003,"App\\test\\RepoTest::testEncrypt with data set #0":0.006,"App\\test\\RepoTest::testEncrypt with data set #1":0}}
